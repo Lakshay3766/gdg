@@ -1,4 +1,0 @@
-# gdg
-# gdg
-# gdg
-# gdg
