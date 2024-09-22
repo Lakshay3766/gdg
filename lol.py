@@ -26,9 +26,15 @@ def check_profile(url):
         member_info = soup.find(string=lambda text: text and "Member since" in text)
         if member_info:
             year = member_info.split()[-1]
+            
+            # Extract username
+            username_tag = soup.find('div', class_='ql-headline-2')
+            username = username_tag.text.strip() if username_tag else "Unknown"
+            
             profile_info = {
                 "year": year,
                 "url": url,
+                "username": username,
                 "badges": [],
                 "is_eligible": False  # Added eligibility key
             }
@@ -80,6 +86,7 @@ if option == "Cloud Skill Boost Profile Checker":
                 eligibility_status = "Ineligible" if not profile_info["is_eligible"] else "Eligible"
                 st.markdown(f"""
                     <div style="border: 2px solid #007bff; padding: 15px; border-radius: 8px; background-color: #e9f5ff; color: #333;">
+                        <strong style="color: #0056b3;">Username:</strong> {profile_info['username']}<br>
                         <strong style="color: #0056b3;">Profile URL:</strong> <a href="{profile_info['url']}" target="_blank" style="color: #007bff; text-decoration: none;">{profile_info['url']}</a><br>
                         <strong style="color: #0056b3;">Status:</strong> {profile_info['status']}<br>
                         <strong style="color: #0056b3;">Year Created:</strong> {profile_info['year']}<br>
@@ -137,10 +144,11 @@ if option == "Cloud Skill Boost Profile Checker":
                     """, unsafe_allow_html=True)
 
             if results:
-                st.markdown("### Valid Accounts:")
+                st.markdown("### Ineligible Accounts:")
                 for result in results:
                     st.markdown(f"""
                         <div style="border: 2px solid #007bff; padding: 10px; border-radius: 5px; background-color: #e9f7ff; color: #333;">
+                            <strong style="color: #007bff;">Username:</strong> {result['username']}<br>
                             <strong style="color: #007bff;">Profile URL:</strong> <a href="{result['url']}" target="_blank" style="color: #007bff; text-decoration: none;">{result['url']}</a><br>
                             <strong style="color: #007bff;">Status:</strong> <span style="color: {'green' if result['status'] == 'Old account' else 'red'};">{result['status']}</span><br>
                             <strong style="color: #007bff;">Year Created:</strong> <span style="color: #555;">{result['year']}</span><br>
